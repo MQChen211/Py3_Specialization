@@ -1,0 +1,60 @@
+punctuation_chars = ["'", '"', ",", ".", "!", ":", ";", '#', '@']
+
+def strip_punctuation(word):
+    for w in punctuation_chars:
+        word = word.replace(w,"")
+    return word
+
+# list of positive words to use
+positive_words = []
+with open("positive_words.txt") as pos_f:
+    for lin in pos_f:
+        if lin[0] != ';' and lin[0] != '\n':
+            positive_words.append(lin.strip())
+
+def get_pos(sentences):
+    sentences_lowered = sentences.lower()  ### lowecase sentences
+    sentences_strip_punc = strip_punctuation(sentences_lowered)  ### strip punctuation, using the function defined in part_1
+    sentences_split = sentences_strip_punc.split()   ###  split sentences into words
+
+    count_pos = 0
+    for word in sentences_split:
+        if word in positive_words:
+            count_pos = count_pos + 1
+    return count_pos
+
+negative_words = []
+with open("negative_words.txt") as pos_f:
+    for lin in pos_f:
+        if lin[0] != ';' and lin[0] != '\n':
+            negative_words.append(lin.strip())
+
+def get_neg(sentences):
+    sentences_lowered = sentences.lower()  ### lowecase sentences
+    sentences_strip_punc = strip_punctuation(sentences_lowered)  ### strip punctuation, using the function defined in part_1
+    sentences_split = sentences_strip_punc.split()   ###  split sentences into words
+
+    count_neg = 0
+    for word in sentences_split:
+        if word in negative_words:
+            count_neg = count_neg + 1
+    return count_neg
+
+
+data_file = open("project_twitter_data.csv","r") ###  open file which has the data
+analysis_file = open("resulting_data.csv","w")  ###  analysis file
+analysis_file.write("Number of Retweets, Number of Replies, Positive Score, Negative Score, Net Score")
+analysis_file.write("\n")
+
+for lin in data_file.readlines()[1:]:
+
+    lin = lin.strip().split(",")
+    #twi = ""
+    #twi = ("{},{},{},{},{}".format("{},{},{},{},{}".format(lin[1], lin[2], get_pos(lin[0]), get_neg(lin[0]), (get_pos(lin[0])-get_neg(lin[0]))))
+    #analysis_file.write(twi)
+    #analysis_file.write("\n")
+    analysis_file.write("{},{},{},{},{}".format(lin[1], lin[2], get_pos(lin[0]), get_neg(lin[0]), (get_pos(lin[0]) - get_neg(lin[0]))))
+    analysis_file.write("\n")
+
+analysis_file.close()
+data_file.close()
